@@ -9,10 +9,13 @@
 #include "SceneManager.h"
 #include "ResourceManager.h"
 #include "TextObject.h"
+#include "Components/TextComponent.h"
+#include "Components/FPSComponent.h"
 #include "Scene.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
+
 
 static void load()
 {
@@ -32,6 +35,20 @@ static void load()
 	to->SetColor({ 255, 255, 0, 255 });
 	to->SetPosition(292, 20);
 	scene.Add(std::move(to));
+
+	//FPSCounter
+	auto fpsGO = std::make_unique<dae::GameObject>();
+	auto fpsTO = std::make_shared<dae::TextObject>("0.0", font, SDL_Color{ 255, 255, 0, 255 });
+	fpsTO->SetPosition(20, 20);
+
+	auto textComponent = std::make_unique<TextComponent>(fpsTO);
+	TextComponent* pTextComponent = textComponent.get();
+	fpsGO->AddComponent(std::move(textComponent));
+
+	auto fpsComponent = std::make_unique<FPSComponent>(pTextComponent);
+	fpsGO->AddComponent(std::move(fpsComponent));
+
+	scene.Add(std::move(fpsGO));
 }
 
 int main(int, char*[]) {

@@ -1,6 +1,11 @@
 ﻿#include <stdexcept>
 #include <sstream>
 #include <iostream>
+#include <chrono>
+using namespace std::chrono;
+
+#include <thread>
+using namespace std;
 
 #if WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -88,6 +93,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 {
 	load();
 #ifndef __EMSCRIPTEN__
+	m_LastTime = high_resolution_clock::now();
 	while (!m_quit)
 		RunOneFrame();
 #else
@@ -97,7 +103,20 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 void dae::Minigin::RunOneFrame()
 {
+	const auto currentTime = high_resolution_clock::now();
+	const float deltaTime = duration<float>(currentTime - m_LastTime).count();
+	m_LastTime = currentTime;
+
 	m_quit = !InputManager::GetInstance().ProcessInput();
-	SceneManager::GetInstance().Update();
+	SceneManager::GetInstance().Update(deltaTime);
 	Renderer::GetInstance().Render();
+
+
+	
+
+	const auto sleep_time = currentTime + milliseconds(m_MsPerFrame) - high_resolution_clock::now();
+	this_thread::sleep_for(sleep_time);
+
+
+
 }

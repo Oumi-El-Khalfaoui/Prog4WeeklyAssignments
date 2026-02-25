@@ -2,6 +2,8 @@
 #include <string>
 #include <functional>
 #include <filesystem>
+#include <chrono>
+using namespace std::chrono;
 
 namespace dae
 {
@@ -18,5 +20,11 @@ namespace dae
 		Minigin(Minigin&& other) = delete;
 		Minigin& operator=(const Minigin& other) = delete;
 		Minigin& operator=(Minigin&& other) = delete;
+
+
+	private:
+		high_resolution_clock::time_point m_LastTime{};
+		const int m_TargetFps = 60;
+		const milliseconds m_MsPerFrame = milliseconds(1000 / m_TargetFps);
 	};
 }
