@@ -30,14 +30,6 @@ void dae::TextObject::Update(float /*deltaTime*/)
 	
 }
 
-void dae::TextObject::Render() const
-{
-	if (m_textTexture != nullptr)
-	{
-		const auto& pos = m_transform.GetPosition();
-		Renderer::GetInstance().RenderTexture(*m_textTexture, pos.x, pos.y);
-	}
-}
 
 void dae::TextObject::SetText(const std::string& text)
 {
@@ -47,7 +39,16 @@ void dae::TextObject::SetText(const std::string& text)
 
 void dae::TextObject::SetPosition(const float x, const float y)
 {
-	m_transform.SetPosition(x, y);
+	m_transform.SetLocalPosition(x, y);
+}
+
+void dae::TextObject::Render() const
+{
+	if (m_textTexture != nullptr)
+	{
+		const auto& pos = m_transform.GetLocalPosition();
+		Renderer::GetInstance().RenderTexture(*m_textTexture, pos.x, pos.y);
+	}
 }
 
 void dae::TextObject::SetColor(const SDL_Color& color) 

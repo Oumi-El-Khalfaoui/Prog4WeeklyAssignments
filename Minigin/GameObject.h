@@ -10,8 +10,6 @@ namespace dae
 	class Texture2D;
 	class GameObject 
 	{
-		Transform m_transform{};
-		std::shared_ptr<Texture2D> m_texture{};
 	public:
 		virtual void Update(float deltaTime) {
 			for (auto& component : m_components)
@@ -42,10 +40,20 @@ namespace dae
 
 
 		//Remove a component from a game object in a safe manner
-		//void RemoveComponent(std::unique_ptr<Component> component);
+		void RemoveComponent(std::unique_ptr<Component> component);
 
 		//Check whether a component has been added
 		//TODO
+
+		//W02
+		//Scenegraph
+		void SetParent(GameObject* parent, bool keepWorldPosition = true);
+		GameObject* GetParent() const { return m_parent; }
+		int GetChildCount() const { return static_cast<int>(m_children.size()); }
+		GameObject* GetChildAt(int index) const { return m_children[index]; }
+
+		void SetLocalPosition(const glm::vec3& pos);
+		const glm::vec3& GetWorldPosition();
 
 		void SetTexture(const std::string& filename);
 		void SetPosition(float x, float y);
@@ -58,6 +66,20 @@ namespace dae
 		GameObject& operator=(GameObject&& other) = delete;
 
 	private:
+		Transform m_transform{};
+		std::shared_ptr<Texture2D> m_texture{};
+
 		std::vector<std::unique_ptr<Component>> m_components;
+
+		GameObject* m_parent;
+		std::vector<GameObject*> m_children{};
+
+		bool m_positionIsDirty{ true };
+
+		void AddChild(GameObject* child);
+		void RemoveChild(GameObject* child);
+		bool IsChild(GameObject* go) const;
+		void SetPositionDirty();
+		void UpdateWorldPosition();
 	};
 }

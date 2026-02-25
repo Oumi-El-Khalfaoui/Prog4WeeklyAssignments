@@ -11,6 +11,7 @@
 #include "TextObject.h"
 #include "Components/TextComponent.h"
 #include "Components/FPSComponent.h"
+#include "Components/RotatorComponent.h"
 #include "Scene.h"
 
 #include <filesystem>
@@ -49,6 +50,21 @@ static void load()
 	fpsGO->AddComponent(std::move(fpsComponent));
 
 	scene.Add(std::move(fpsGO));
+
+	//Character1
+	auto character1 = std::make_unique<dae::GameObject>();
+	character1->SetTexture("pou.png");
+	character1->SetLocalPosition({ 320.f, 240.f, 0.f });
+	character1->AddComponent(std::make_unique<RotatorComponent>(100.f, 1.f, glm::vec3{ 390.f, 240.f, 0.f }));
+	dae::GameObject* pCharacter1 = character1.get();
+	scene.Add(std::move(character1));
+
+	//Character2
+	auto character2 = std::make_unique<dae::GameObject>();
+	character2->SetTexture("pou2.png");
+	character2->AddComponent(std::make_unique<RotatorComponent>(100.f, -2.f));
+	character2->SetParent(pCharacter1, false);
+	scene.Add(std::move(character2));
 }
 
 int main(int, char*[]) {
