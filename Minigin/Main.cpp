@@ -12,6 +12,7 @@
 #include "Components/TextComponent.h"
 #include "Components/FPSComponent.h"
 #include "Components/RotatorComponent.h"
+#include "Components/LevelComponent.h"
 #include "Scene.h"
 
 #include <filesystem>
@@ -37,6 +38,11 @@ static void load()
 	to->SetPosition(292, 20);
 	scene.Add(std::move(to));
 
+	// Level1 BG
+	auto levelGO = std::make_unique<dae::GameObject>(); //empty go as level container
+	levelGO->AddComponent(std::make_unique<LevelComponent>("level1.lvl"));
+	scene.Add(std::move(levelGO));
+
 	//FPSCounter
 	auto fpsGO = std::make_unique<dae::GameObject>();
 	auto fpsTO = std::make_shared<dae::TextObject>("0.0", font, SDL_Color{ 255, 255, 0, 255 });
@@ -53,7 +59,7 @@ static void load()
 
 	//Character1
 	auto character1 = std::make_unique<dae::GameObject>();
-	character1->SetTexture("pou.png");
+	character1->SetTexture("bomberman.png");
 	character1->SetLocalPosition({ 320.f, 240.f, 0.f });
 	character1->AddComponent(std::make_unique<RotatorComponent>(100.f, 1.f, glm::vec3{ 390.f, 240.f, 0.f }));
 	dae::GameObject* pCharacter1 = character1.get();
@@ -61,7 +67,7 @@ static void load()
 
 	//Character2
 	auto character2 = std::make_unique<dae::GameObject>();
-	character2->SetTexture("pou2.png");
+	character2->SetTexture("bomberman.png");
 	character2->AddComponent(std::make_unique<RotatorComponent>(100.f, -2.f));
 	character2->SetParent(pCharacter1, false);
 	scene.Add(std::move(character2));

@@ -71,7 +71,7 @@ namespace dae
 
 		std::vector<std::unique_ptr<Component>> m_components;
 
-		GameObject* m_parent;
+		GameObject* m_parent{ nullptr };
 		std::vector<GameObject*> m_children{};
 
 		bool m_positionIsDirty{ true };
