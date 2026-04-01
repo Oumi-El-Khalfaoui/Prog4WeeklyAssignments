@@ -13,6 +13,8 @@
 #include "Components/FPSComponent.h"
 #include "Components/RotatorComponent.h"
 #include "Components/LevelComponent.h"
+#include "InputManager.h"
+#include "Input/MoveCommand.h"
 #include "Scene.h"
 
 #include <filesystem>
@@ -32,16 +34,17 @@ static void load()
 	go->SetPosition(358, 180);
 	scene.Add(std::move(go));
 
+	// Level1 BG
+	auto levelGO = std::make_unique<dae::GameObject>(); //empty go as level container
+	levelGO->AddComponent(std::make_unique<LevelComponent>("level1.lvl"));
+	scene.Add(std::move(levelGO));
+	//
+
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 	auto to = std::make_unique<dae::TextObject>("Programming 4 Assignment", font);
 	to->SetColor({ 255, 255, 0, 255 });
 	to->SetPosition(292, 20);
 	scene.Add(std::move(to));
-
-	// Level1 BG
-	auto levelGO = std::make_unique<dae::GameObject>(); //empty go as level container
-	levelGO->AddComponent(std::make_unique<LevelComponent>("level1.lvl"));
-	scene.Add(std::move(levelGO));
 
 	//FPSCounter
 	auto fpsGO = std::make_unique<dae::GameObject>();
@@ -61,9 +64,17 @@ static void load()
 	auto character1 = std::make_unique<dae::GameObject>();
 	character1->SetTexture("bomberman.png");
 	character1->SetLocalPosition({ 320.f, 240.f, 0.f });
-	character1->AddComponent(std::make_unique<RotatorComponent>(100.f, 1.f, glm::vec3{ 390.f, 240.f, 0.f }));
+	//character1->AddComponent(std::make_unique<RotatorComponent>(100.f, 1.f, glm::vec3{ 390.f, 240.f, 0.f }));
 	dae::GameObject* pCharacter1 = character1.get();
 	scene.Add(std::move(character1));
+	
+		// keybindings
+	auto& input = dae::InputManager::GetInstance();
+
+	input.BindKeyboardCommand(SDL_SCANCODE_W, dae::KeyState::Pressed, std::make_unique<dae::MoveCommand>(pCharacter1, glm::vec3{ 0, -1, 0 }, 10.f));
+	input.BindKeyboardCommand(SDL_SCANCODE_S, dae::KeyState::Pressed, std::make_unique<dae::MoveCommand>(pCharacter1, glm::vec3{ 0, 1, 0 }, 10.f));
+	input.BindKeyboardCommand(SDL_SCANCODE_A, dae::KeyState::Pressed, std::make_unique<dae::MoveCommand>(pCharacter1, glm::vec3{ -1, 0, 0 }, 10.f));
+	input.BindKeyboardCommand(SDL_SCANCODE_D, dae::KeyState::Pressed, std::make_unique<dae::MoveCommand>(pCharacter1, glm::vec3{ 1, 0, 0 }, 10.f));
 
 	//Character2
 	auto character2 = std::make_unique<dae::GameObject>();

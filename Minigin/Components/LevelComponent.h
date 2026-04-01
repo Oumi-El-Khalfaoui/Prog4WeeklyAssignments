@@ -23,6 +23,9 @@ public:
 private:
 	TileType m_grid[GRID_HEIGHT][GRID_WIDTH]{};
 
+	float m_offsetX{ 200.f };
+	float m_offsetY{ 80.f }; // space for stats UI
+
 	std::shared_ptr<dae::Texture2D> m_emptyTexture;
 	std::shared_ptr<dae::Texture2D> m_wallTexture;
 	std::shared_ptr<dae::Texture2D> m_solidWallTexture;

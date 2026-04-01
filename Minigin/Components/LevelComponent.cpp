@@ -27,8 +27,8 @@ void LevelComponent::Render()
 				continue;
 			}
 
-			float x = static_cast<float>(col * TILE_SIZE);
-			float y = static_cast<float>(row * TILE_SIZE);
+			float x = static_cast<float>(col * TILE_SIZE) +  m_offsetX;
+			float y = static_cast<float>(row * TILE_SIZE) + m_offsetY;
 
 			dae::Renderer::GetInstance().RenderTexture(*texture, x, y);
 		}
