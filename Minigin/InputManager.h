@@ -2,6 +2,7 @@
 #include "Singleton.h"
 #include "Input/Command.h"
 #include "Input/Gamepad.h"
+#include "Input/ControllerButton.h"
 
 #include <SDL3/SDL.h>
 #include <memory>
@@ -17,25 +18,13 @@ namespace dae
 		Pressed
 	};
 
-	enum class ControllerButton : unsigned
-	{
-		DPadUp = 0x0001,
-		DPadDown = 0x0002,
-		DPadLeft = 0x0004,
-		DPadRight = 0x0008,
-		Start = 0x0010,
-		Back = 0x0020,
-		A = 0x1000,
-		B = 0x2000,
-		X = 0x4000,
-		Y = 0x8000
-	};
-
 	class Gamepad;
 
 	class InputManager final : public Singleton<InputManager>
 	{
 	public:
+		~InputManager();
+
 		bool ProcessInput();
 
 		void BindKeyboardCommand(SDL_Scancode key, KeyState state, std::unique_ptr<Command> command);

@@ -40,15 +40,14 @@ namespace dae
 	void Gamepad::Update()
 	{
 #ifndef __EMSCRIPTEN__
-		m_pImpl->previousState = m_pImpl->currentState;
+		CopyMemory(&m_pImpl->previousState, &m_pImpl->currentState, sizeof(XINPUT_STATE));
 		ZeroMemory(&m_pImpl->currentState, sizeof(XINPUT_STATE));
 		XInputGetState(m_pImpl->index, &m_pImpl->currentState);
 
-		const WORD prev = m_pImpl->previousState.Gamepad.wButtons;
-		const WORD curr = m_pImpl->currentState.Gamepad.wButtons;
+		auto buttonChanges = m_pImpl->currentState.Gamepad.wButtons ^ m_pImpl->previousState.Gamepad.wButtons;
 
-		m_pImpl->buttonsPressedThisFrame = (curr & ~prev);
-		m_pImpl->buttonsReleasedThisFrame = (prev & ~curr);
+		m_pImpl->buttonsPressedThisFrame = buttonChanges & m_pImpl->currentState.Gamepad.wButtons;
+		m_pImpl->buttonsReleasedThisFrame = buttonChanges & (~m_pImpl->currentState.Gamepad.wButtons);
 #endif // !__EMSCRIPTEN__
 	}
 

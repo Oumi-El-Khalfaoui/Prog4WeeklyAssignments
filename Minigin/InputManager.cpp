@@ -1,10 +1,13 @@
 #include <SDL3/SDL.h>
 #include "InputManager.h"
 #include "Input/Gamepad.h"
+#include "Input/ControllerButton.h"
 
 
 namespace dae
 {
+	InputManager::~InputManager() = default;
+
 	Gamepad* dae::InputManager::GetOrCreateGamepad(unsigned int index)
 	{
 		auto it = m_gamepads.find(index);
@@ -18,6 +21,8 @@ namespace dae
 	}
 
 }
+
+
 
 bool dae::InputManager::ProcessInput()
 {

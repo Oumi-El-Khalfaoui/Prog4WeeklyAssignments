@@ -1,10 +1,9 @@
 #pragma once
+#include "ControllerButton.h"
 #include <memory>
 
 namespace dae
 {
-
-	enum class ControllerButton : unsigned;
 
 	class Gamepad final
 	{

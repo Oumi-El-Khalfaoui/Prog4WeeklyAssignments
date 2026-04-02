@@ -27,7 +27,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/TextObject.cpp
   Minigin/Texture2D.cpp
   Minigin/Transform.cpp
- "Minigin/Component.h" "Minigin/Components/FPSComponent.h" "Minigin/Components/TextComponent.h" "Minigin/Components/RotatorComponent.h" "Minigin/LevelData.h" "Minigin/Components/LevelComponent.h" "Minigin/Components/LevelComponent.cpp" "Minigin/Input/Command.h" "Minigin/Input/MoveCommand.h" "Minigin/Input/Gamepad.h" "Minigin/Input/Gamepad.cpp")
+ "Minigin/Component.h" "Minigin/Components/FPSComponent.h" "Minigin/Components/TextComponent.h" "Minigin/Components/RotatorComponent.h" "Minigin/LevelData.h" "Minigin/Components/LevelComponent.h" "Minigin/Components/LevelComponent.cpp" "Minigin/Input/Command.h" "Minigin/Input/MoveCommand.h" "Minigin/Input/Gamepad.h" "Minigin/Input/Gamepad.cpp" "Minigin/Input/ControllerButton.h" "Minigin/Event/IObserver.h" "Minigin/Event/Subject.h" "Minigin/Event/Subject.cpp" "Minigin/Event/GameEvents.h" "Minigin/Components/HealthComponent.h" "Minigin/Components/ScoreComponent.h" "Minigin/Components/LivesDisplayComponent.h" "Minigin/Components/ScoreDisplayComponent.h")
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
