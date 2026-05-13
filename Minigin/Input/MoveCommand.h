@@ -26,7 +26,22 @@ namespace dae
 
 			if (animator)
 			{
-				animator->SetWalking(true);
+				if (m_direction.x > 0)
+				{
+					animator->SetState(AnimationState::WalkRight);
+				}
+				else if (m_direction.x < 0)
+				{
+					animator->SetState(AnimationState::WalkLeft);
+				}
+				else if (m_direction.y > 0)
+				{
+					animator->SetState(AnimationState::WalkDown);
+				}
+				else if (m_direction.y < 0)
+				{
+					animator->SetState(AnimationState::WalkUp);
+				}
 			}
 		}
 

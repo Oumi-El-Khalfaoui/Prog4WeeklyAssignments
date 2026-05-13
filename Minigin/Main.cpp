@@ -74,9 +74,20 @@ static void load()
 	auto character1 = std::make_unique<dae::GameObject>();
 	//character1->SetTexture("bomberman.png");
 	character1->SetLocalPosition({ 320.f, 240.f, 0.f });
-	auto spriteSheet = dae::ResourceManager::GetInstance().LoadTexture("bomberman_walk_fw_spritesheet.png");
 
-	character1->AddComponent(std::make_unique<SpriteAnimatorComponent>(spriteSheet, 3, .15f));
+	auto walkSpriteSheet = dae::ResourceManager::GetInstance().LoadTexture("bomberman_walk_fw_spritesheet.png");
+	auto idleSpriteSheet = dae::ResourceManager::GetInstance().LoadTexture("bomberman.png");
+
+	auto animator = std::make_unique<SpriteAnimatorComponent>();
+	auto animatorPtr = animator.get();
+	character1->AddComponent(std::move(animator));
+
+	animatorPtr->AddAnimation(AnimationState::Idle, { idleSpriteSheet, 1, 0.15f });
+	animatorPtr->AddAnimation(AnimationState::WalkDown, { walkSpriteSheet, 3, 0.15f });
+	animatorPtr->AddAnimation(AnimationState::WalkLeft, { walkSpriteSheet, 3, 0.15f });
+	animatorPtr->AddAnimation(AnimationState::WalkRight, { walkSpriteSheet, 3, 0.15f });
+	animatorPtr->AddAnimation(AnimationState::WalkUp, { walkSpriteSheet, 3, 0.15f });
+
 	//character1->AddComponent(std::make_unique<RotatorComponent>(100.f, 1.f, glm::vec3{ 390.f, 240.f, 0.f }));
 	dae::GameObject* pCharacter1 = character1.get();
 

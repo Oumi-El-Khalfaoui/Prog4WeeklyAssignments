@@ -5,82 +5,101 @@
 #include "../Renderer.h"
 #include <memory>
 
+enum class AnimationState
+{
+	Idle,
+	WalkUp,
+	WalkDown,
+	WalkLeft,
+	WalkRight
+};
 
+struct Animation
+{
+	std::shared_ptr<dae::Texture2D> texture;
+	int frameCount;
+	float frameTime;
+};
 
 class SpriteAnimatorComponent : public Component
 {
 public:
-	SpriteAnimatorComponent(std::shared_ptr<dae::Texture2D> spriteSheet, int frameCount, float frameTime)
-		: m_spriteSheet(spriteSheet)
-		, m_frameCount(frameCount)
-		, m_frameTime(frameTime)
-	{
-		float totalWidth{}, height{};
-		SDL_GetTextureSize(spriteSheet->GetSDLTexture(), &totalWidth, &height);
-		m_frameWidth = totalWidth / frameCount;
-		m_frameHeight = height;
-	}
-
-	void SetWalking(bool isWalking)
-	{
-		if (m_isWalking == isWalking)
-		{
-			return;
-		}
-
-		m_isWalking = isWalking;
-
-		if (!isWalking)
-		{
-			m_currentFrame = 0;
-			m_elapsed = 0.f;
-		}
-	}
+	SpriteAnimatorComponent() = default;
 
 	void Update(float deltaTime) override
 	{
-		if (!m_isWalking)
+		if (!m_movedThisFrame)
+		{
+			m_state = AnimationState::Idle;
+		}
+
+		auto it = m_animations.find(m_state);
+		if (it == m_animations.end())
 		{
 			return;
 		}
 
+		const Animation& anim = it->second;
+		
 		m_elapsed += deltaTime;
 
-		if (m_elapsed >= m_frameTime)
+		if (m_elapsed >= anim.frameTime)
 		{
-			m_elapsed -= m_frameTime;
-			m_currentFrame = (m_currentFrame + 1) % m_frameCount;
-
-			if (m_currentFrame == 0)
-			{
-				m_currentFrame = (m_currentFrame + 1) % m_frameCount;
-			}
+			m_elapsed -= anim.frameTime;
+			m_currentFrame = (m_currentFrame + 1) % anim.frameCount;
 		}
 
-		m_isWalking = false;
+		m_movedThisFrame = false;
 	}
 
 	void Render() override
 	{
-		const auto& pos = const_cast<dae::GameObject*>(GetOwner())->GetWorldPosition();
+		auto it = m_animations.find(m_state);
+		if (it == m_animations.end())
+		{
+			return;
+		}
+
+		const Animation& anim = it->second;
+		const auto& pos = GetOwner()->GetWorldPosition();
+
+		float totalWidth{}, height{};
+		SDL_GetTextureSize(anim.texture->GetSDLTexture(), &totalWidth, &height);
+
+		float frameWidth = totalWidth / anim.frameCount;
 
 		SDL_FRect src{};
-		src.x = m_currentFrame * m_frameWidth;
+		src.x = m_currentFrame * frameWidth;
 		src.y = 0.f;
-		src.w = m_frameWidth;
-		src.h = m_frameHeight;
+		src.w = frameWidth;
+		src.h = height;
 
-		dae::Renderer::GetInstance().RenderTexture(*m_spriteSheet, pos.x, pos.y, src);
+		dae::Renderer::GetInstance().RenderTexture(*anim.texture, pos.x, pos.y, src);
+	}
+
+	void SetState(AnimationState newState)
+	{
+		m_movedThisFrame = true;
+
+		if (m_state == newState)
+		{
+			return;
+		}
+
+		m_state = newState;
+		m_currentFrame = 0;
+		m_elapsed = 0;
+	}
+
+	void AddAnimation(AnimationState state, const Animation& anim)
+	{
+		m_animations[state] = anim;
 	}
 
 private:
-	std::shared_ptr<dae::Texture2D> m_spriteSheet;
-	int m_frameCount;
+	std::unordered_map<AnimationState, Animation> m_animations;
 	int m_currentFrame = 0;
-	float m_frameTime;
 	float m_elapsed = 0.f;
-	float m_frameWidth{};
-	float m_frameHeight{};
-	bool m_isWalking{ false };
-
+	AnimationState m_state{ AnimationState::Idle };
+	bool m_movedThisFrame{ false };
 };
