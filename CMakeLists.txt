@@ -104,6 +104,31 @@ if(NOT SDL3_ttf_FOUND)
   endif()
 endif()
 
+# Add SDL3 Mixer
+find_package(SDL3_mixer CONFIG QUIET)
+if(NOT SDL3_mixer_FOUND)
+  if(WIN32)
+    FetchContent_Declare(
+      SDL3_mixer
+      URL https://github.com/libsdl-org/SDL_mixer/releases/download/release-3.2.2/SDL3_mixer-devel-3.2.2-VC.zip
+      DOWNLOAD_NO_PROGRESS ON
+      DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/downloads
+    )
+    FetchContent_MakeAvailable(SDL3_mixer)
+    list(PREPEND CMAKE_PREFIX_PATH "${sdl3_mixer_SOURCE_DIR}")
+    find_package(SDL3_mixer CONFIG REQUIRED)
+  else()
+    FetchContent_Declare(
+      SDL3_mixer
+      GIT_REPOSITORY https://github.com/libsdl-org/SDL_mixer.git
+      GIT_TAG release-3.2.2
+      GIT_SHALLOW TRUE
+      GIT_PROGRESS TRUE
+    )
+    FetchContent_MakeAvailable(SDL3_mixer)
+  endif()
+endif()
+
 if (WIN32)
   # Add VLD (Visual Leak Detector) for memory leak detection on Windows
   find_package(VLD CONFIG)
@@ -121,6 +146,7 @@ target_include_directories("${TARGET_NAME}" PUBLIC
 target_link_libraries("${TARGET_NAME}" PUBLIC
   SDL3::SDL3
   SDL3_ttf::SDL3_ttf
+  SDL3_mixer::SDL3_mixer
   glm::glm
   ${VLD_LIBRARIES}
 )
@@ -162,6 +188,7 @@ elseif(WIN32)
   set(SDL_RUNTIME_DLLS
     SDL3::SDL3
     SDL3_ttf::SDL3_ttf
+    SDL3_mixer::SDL3_mixer
   )
 
   foreach(dllTarget IN LISTS SDL_RUNTIME_DLLS)
