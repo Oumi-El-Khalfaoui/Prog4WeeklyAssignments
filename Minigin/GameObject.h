@@ -29,7 +29,7 @@ namespace dae
 		T* GetComponent() {
 			for (auto& component : m_components)
 			{
-				if (auto casted = dynamic_cast<T*>(component))
+				if (auto casted = dynamic_cast<T*>(component.get()))
 				{
 					return casted;
 				}

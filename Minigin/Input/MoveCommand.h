@@ -2,6 +2,7 @@
 
 #include "Command.h"
 #include "../GameObject.h"
+#include "../Components/SpriteAnimatorComponent.h"
 #include <glm/glm.hpp>
 
 namespace dae
@@ -20,6 +21,13 @@ namespace dae
 			auto pos = m_pTarget->GetWorldPosition();
 			pos += m_direction * m_speed;
 			m_pTarget->SetLocalPosition(pos);
+
+			auto animator = m_pTarget->GetComponent<SpriteAnimatorComponent>();
+
+			if (animator)
+			{
+				animator->SetWalking(true);
+			}
 		}
 
 	private:

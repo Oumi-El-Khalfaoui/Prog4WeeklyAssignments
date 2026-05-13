@@ -72,8 +72,11 @@ static void load()
 
 	//Character1
 	auto character1 = std::make_unique<dae::GameObject>();
-	character1->SetTexture("bomberman.png");
+	//character1->SetTexture("bomberman.png");
 	character1->SetLocalPosition({ 320.f, 240.f, 0.f });
+	auto spriteSheet = dae::ResourceManager::GetInstance().LoadTexture("bomberman_walk_fw_spritesheet.png");
+
+	character1->AddComponent(std::make_unique<SpriteAnimatorComponent>(spriteSheet, 3, .15f));
 	//character1->AddComponent(std::make_unique<RotatorComponent>(100.f, 1.f, glm::vec3{ 390.f, 240.f, 0.f }));
 	dae::GameObject* pCharacter1 = character1.get();
 
@@ -112,10 +115,10 @@ static void load()
 		// keybindings
 	auto& input = dae::InputManager::GetInstance();
 
-	input.BindKeyboardCommand(SDL_SCANCODE_W, dae::KeyState::Pressed, std::make_unique<dae::MoveCommand>(pCharacter1, glm::vec3{ 0, -1, 0 }, 10.f));
-	input.BindKeyboardCommand(SDL_SCANCODE_S, dae::KeyState::Pressed, std::make_unique<dae::MoveCommand>(pCharacter1, glm::vec3{ 0, 1, 0 }, 10.f));
-	input.BindKeyboardCommand(SDL_SCANCODE_A, dae::KeyState::Pressed, std::make_unique<dae::MoveCommand>(pCharacter1, glm::vec3{ -1, 0, 0 }, 10.f));
-	input.BindKeyboardCommand(SDL_SCANCODE_D, dae::KeyState::Pressed, std::make_unique<dae::MoveCommand>(pCharacter1, glm::vec3{ 1, 0, 0 }, 10.f));
+	input.BindKeyboardCommand(SDL_SCANCODE_W, dae::KeyState::Pressed, std::make_unique<dae::MoveCommand>(pCharacter1, glm::vec3{ 0, -1, 0 },3.f));
+	input.BindKeyboardCommand(SDL_SCANCODE_S, dae::KeyState::Pressed, std::make_unique<dae::MoveCommand>(pCharacter1, glm::vec3{ 0, 1, 0 }, 3.f));
+	input.BindKeyboardCommand(SDL_SCANCODE_A, dae::KeyState::Pressed, std::make_unique<dae::MoveCommand>(pCharacter1, glm::vec3{ -1, 0, 0 },3.f));
+	input.BindKeyboardCommand(SDL_SCANCODE_D, dae::KeyState::Pressed, std::make_unique<dae::MoveCommand>(pCharacter1, glm::vec3{ 1, 0, 0 }, 3.f));
 
 	//Character2
 	auto character2 = std::make_unique<dae::GameObject>();
