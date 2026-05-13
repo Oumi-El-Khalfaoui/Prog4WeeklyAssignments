@@ -9,6 +9,8 @@
 #include "SceneManager.h"
 #include "ResourceManager.h"
 #include "TextObject.h"
+
+// components
 #include "Components/TextComponent.h"
 #include "Components/FPSComponent.h"
 #include "Components/RotatorComponent.h"
@@ -17,8 +19,18 @@
 #include "Components/LivesDisplayComponent.h"
 #include "Components/ScoreComponent.h"
 #include "Components/ScoreDisplayComponent.h"
+
+// input
 #include "InputManager.h"
 #include "Input/MoveCommand.h"
+#include "Input/PlaySoundCommand.h"
+
+// sound
+#include "Sound/ServiceLocator.h"
+#include "Sound/SDLSoundSystem.h"
+#include "Sound/LoggingSoundSystem.h"
+#include "Sound/SoundObserver.h"
+
 #include "Scene.h"
 
 #include <filesystem>
@@ -27,6 +39,26 @@ namespace fs = std::filesystem;
 
 static void load()
 {
+#ifdef _DEBUG
+	dae::ServiceLocator::RegisterSoundSystem(std::make_unique<dae::LoggingSoundSystem>(std::make_unique<dae::SDLSoundSystem>()));
+
+#else
+	dae::ServiceLocator::RegisterSoundSystem(std::make_unique<dae::SDLSoundSystem>());
+
+#endif // _DEBUG
+
+	// sounds
+	fs::path dataPath = "./Data/";
+	if (!fs::exists(dataPath))
+		dataPath = "../Data/";
+	
+	auto& ss = dae::ServiceLocator::GetSoundSystem();
+	ss.LoadSound(SFX_PLAYER_DIED, "");
+	ss.LoadSound(SFX_POINTS, "");
+	ss.LoadSound(SFX_ENEMY_DIED, "");
+	ss.LoadSound(SFX_PICKUP, (dataPath / "testJingle.mp3").string());
+
+
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 
 	//fonts
@@ -102,6 +134,10 @@ static void load()
 
 	scene.Add(std::move(character1));
 
+	static SoundObserver soundObserver;
+	pHealth1->GetSubject()->AddObserver(&soundObserver);
+	pScore1->GetSubject()->AddObserver(&soundObserver);
+
 		// UI
 	auto livesGO1 = std::make_unique<dae::GameObject>();
 	auto livesTO1 = std::make_shared<dae::TextObject>("Lives: 3", fontGame, SDL_Color{ 255, 255, 255, 255 });
@@ -130,6 +166,9 @@ static void load()
 	input.BindKeyboardCommand(SDL_SCANCODE_S, dae::KeyState::Pressed, std::make_unique<dae::MoveCommand>(pCharacter1, glm::vec3{ 0, 1, 0 }, 3.f));
 	input.BindKeyboardCommand(SDL_SCANCODE_A, dae::KeyState::Pressed, std::make_unique<dae::MoveCommand>(pCharacter1, glm::vec3{ -1, 0, 0 },3.f));
 	input.BindKeyboardCommand(SDL_SCANCODE_D, dae::KeyState::Pressed, std::make_unique<dae::MoveCommand>(pCharacter1, glm::vec3{ 1, 0, 0 }, 3.f));
+
+	// sound test
+	input.BindKeyboardCommand(SDL_SCANCODE_F, dae::KeyState::Down, std::make_unique<dae::PlaySoundCommand>(SFX_PICKUP, 1.f));
 
 	//Character2
 	auto character2 = std::make_unique<dae::GameObject>();
