@@ -108,15 +108,33 @@ void dae::Minigin::RunOneFrame()
 	const float deltaTime = duration<float>(currentTime - m_LastTime).count();
 	m_LastTime = currentTime;
 
-	m_quit = !InputManager::GetInstance().ProcessInput();
+	/*m_quit = !InputManager::GetInstance().ProcessInput();
 	SceneManager::GetInstance().Update(deltaTime);
-	Renderer::GetInstance().Render();
+	Renderer::GetInstance().Render();*/
 
+	/*const auto sleep_time = currentTime + milliseconds(m_MsPerFrame) - high_resolution_clock::now();
+	this_thread::sleep_for(sleep_time);*/
 
+	// Bad approach > what if sleep time is negative?
+	/// > better approach > fixed time step
 	
+	//lag Accumulator
+	m_Lag += deltaTime;
+	
+	// handle input
+	m_quit = !InputManager::GetInstance().ProcessInput();
 
-	const auto sleep_time = currentTime + milliseconds(m_MsPerFrame) - high_resolution_clock::now();
-	this_thread::sleep_for(sleep_time);
+	// update game using fixed interval
+	const float frameTimeInSeconds = m_MsPerFrame.count() / 1000.f;
+
+	while (m_Lag > frameTimeInSeconds)
+	{
+		SceneManager::GetInstance().Update(m_FixedDeltaTime);
+		m_Lag -= frameTimeInSeconds;
+
+	}
+
+	Renderer::GetInstance().Render();
 
 
 

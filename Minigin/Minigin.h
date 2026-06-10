@@ -24,7 +24,10 @@ namespace dae
 
 	private:
 		high_resolution_clock::time_point m_LastTime{};
+		float m_Lag = 0.f;
 		const int m_TargetFps = 60;
-		const milliseconds m_MsPerFrame = milliseconds(1000 / m_TargetFps);
+		//const milliseconds m_MsPerFrame = milliseconds(1000 / m_TargetFps);
+		const duration<float, std::milli> m_MsPerFrame{ 1000.f / m_TargetFps };
+		const float m_FixedDeltaTime = 1.f / m_TargetFps;
 	};
 }

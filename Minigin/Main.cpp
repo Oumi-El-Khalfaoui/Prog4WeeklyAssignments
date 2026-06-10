@@ -115,10 +115,10 @@ static void load()
 	character1->AddComponent(std::move(animator));
 
 	animatorPtr->AddAnimation(AnimationState::Idle, { idleSpriteSheet, 1, 0.15f });
-	animatorPtr->AddAnimation(AnimationState::WalkDown, { walkSpriteSheet, 3, 0.15f });
-	animatorPtr->AddAnimation(AnimationState::WalkLeft, { walkSpriteSheet, 3, 0.15f });
-	animatorPtr->AddAnimation(AnimationState::WalkRight, { walkSpriteSheet, 3, 0.15f });
-	animatorPtr->AddAnimation(AnimationState::WalkUp, { walkSpriteSheet, 3, 0.15f });
+	animatorPtr->AddAnimation(AnimationState::WalkDown, { walkSpriteSheet, 3, 0.2f });
+	animatorPtr->AddAnimation(AnimationState::WalkLeft, { walkSpriteSheet, 3, 0.2f });
+	animatorPtr->AddAnimation(AnimationState::WalkRight, { walkSpriteSheet, 3, 0.2f });
+	animatorPtr->AddAnimation(AnimationState::WalkUp, { walkSpriteSheet, 3, 0.2f });
 
 	//character1->AddComponent(std::make_unique<RotatorComponent>(100.f, 1.f, glm::vec3{ 390.f, 240.f, 0.f }));
 	dae::GameObject* pCharacter1 = character1.get();
